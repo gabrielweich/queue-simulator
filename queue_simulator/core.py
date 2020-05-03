@@ -4,63 +4,46 @@ from .scheduler import Scheduler
 from .network import Network
 from .event import Event, EventType
 from collections import defaultdict
+import yaml
+import sys
 
-QUEUE_1_PROPERTIES = QueueProperties(
-    name='Q1',
-    servers=2,
-    capacity=3,
-    min_arrival=2,
-    max_arrival=3,
-    min_service=2,
-    max_service=5
-)
 
-QUEUE_2_PROPERTIES = QueueProperties(
-    name='Q2',
-    servers=1,
-    capacity=3,
-    min_service=3,
-    max_service=5
-)
-
-NETWORK = [
-    {
-        'source': 'Q1',
-        'target': 'Q2',
-        'probability': 100
-    }
-]
-
-FIRST_ENTRY_TIME = 2.5
 ITERATIONS = 100000
-AVERAGE_FROM = 5
-SEED = None
 
 
 class QueueSimulator:
-    def __init__(self, queues_description, network_description):
-        self.random = Random(SEED)
+    def __init__(self, queues, networks, seed, arrivals, iterations):
+        self.random = Random(seed)
+        self.random.random_list = self.generate_randoms(iterations)
+
         self.scheduler = Scheduler()
         self.network = Network(self.random)
-        self.queues = {q.name: Queue(q, self.scheduler, self.random) for q in queues_description}
+        self.queues = {q.name: Queue(q, self.scheduler, self.random) for q in queues}
 
-        for net in network_description:
+        for net in networks:
             self.network.add_entry(net['source'], net['target'], net['probability'])
+        for arrival in arrivals:
+            self.scheduler.add_event(arrival)
 
-        first_event = Event(EventType.ENTRY, FIRST_ENTRY_TIME, 'Q1')
-        self.scheduler.add_event(first_event)
+    def generate_randoms(self, iterations):
+        return [self.random.generate_random() for _ in range(iterations)]
 
     def run(self):
-        for i in range(ITERATIONS):
+
+        while len(self.random.random_list):
             event = self.scheduler.remove_first()
+
+            for q in self.queues.values():
+                q.compute_time(event.event_time)
+
+            self.scheduler.global_time = event.event_time
+
             if event.event_type == EventType.ENTRY:
-                self.queues[event.queue].enter_event(event)
+                self.queues[event.queue].enter_event()
             elif event.event_type == EventType.EXIT:
                 redirect_to = self.network.get_destiny(event.queue)
-                self.queues[event.queue].compute_time(event.event_time)
                 self.queues[event.queue].process_exit()
                 if redirect_to is not None:
-                    self.queues[redirect_to].compute_time(event.event_time)
                     self.queues[redirect_to].process_enter()
 
 
@@ -74,11 +57,50 @@ def print_statistics(states):
         print(row_format.format(i, round_state, f'{probability}%'))
 
 
+def parse_file():
+    args = sys.argv
+    if len(args) != 2:
+        print("Usage: python -m queue_simulator <file.yml>")
+        exit(1)
+
+    with open(args[1]) as f:
+        data = yaml.load(f, Loader=yaml.BaseLoader)
+        arrivals = []
+        queues = []
+        networks = []
+        seeds = [1]
+
+        for q, t in data['arrivals'].items():
+            arrivals.append(Event(EventType.ENTRY, float(t), q))
+        for q, p in data['queues'].items():
+            queue_properties = {
+                'name': q,
+                'servers': int(p['servers']),
+                'capacity': int(p['capacity']) if 'capacity' in p else None,
+                'min_arrival': float(p['minArrival']) if 'minArrival' in p else None,
+                'max_arrival': float(p['maxArrival']) if 'maxArrival' in p else None,
+                'min_service': float(p['minService']),
+                'max_service': float(p['maxService'])
+            }
+            queues.append(QueueProperties(**queue_properties))
+        for n in data['network']:
+            network_properties = {
+                'source': n['source'],
+                'target': n['target'],
+                'probability': int(float(n['probability'])*100)
+            }
+            networks.append(network_properties)
+        if 'seeds' in data:
+            seeds = [int(s) for s in data['seeds']]
+        iterations = int(data.get('rndnumbersPerSeed', 10000))
+        return arrivals, queues, networks, seeds, iterations
+
+
 def main():
+    arrivals, queues, networks, seeds, iterations = parse_file()
     queues_states = defaultdict(list)
-    queues = [QUEUE_1_PROPERTIES, QUEUE_2_PROPERTIES]
-    for i in range(AVERAGE_FROM):
-        qs = QueueSimulator(queues, NETWORK)
+    for seed in seeds:
+        qs = QueueSimulator(queues, networks, seed, arrivals, iterations)
         qs.run()
         for q in qs.queues.values():
             queues_states[q.queue_properties.name].append(q)
@@ -92,4 +114,5 @@ def main():
         states = [sum(v[i] for v in states_list) / len(states_list) for i in range(len(states_list[0]))]
         print_statistics(states)
         print(f"Losses: {round(sum(losses_list)/len(losses_list))}")
+        print(f"Total time: {round(sum(states), 4)}")
         print("")
