@@ -107,11 +107,14 @@ def main():
 
     for qp in queues:
         arrival_str  = f" | arrival: {qp.min_arrival}..{qp.max_arrival}" if qp.min_arrival is not None and qp.max_arrival is not None else ""
-        print(f"G/G/{qp.servers}/{qp.capacity}{arrival_str} | service: {qp.min_service}..{qp.max_service}")
+        capacity_str = f"/{qp.capacity}" if qp.capacity is not None else ''
+        print(f"G/G/{qp.servers}{capacity_str}{arrival_str} | service: {qp.min_service}..{qp.max_service}")
         states_list = [q.states for q in queues_states[qp.name]]
         losses_list = [q.losses for q in queues_states[qp.name]]
 
-        states = [sum(v[i] for v in states_list) / len(states_list) for i in range(len(states_list[0]))]
+        max_states_len = max(len(s) for s in states_list)
+        state_index = lambda i, v: v[i] if i < len(v) else 0
+        states = [sum(state_index(i, v) for v in states_list) / len(states_list) for i in range(max_states_len)]
         print_statistics(states)
         print(f"Losses: {round(sum(losses_list)/len(losses_list))}")
         print(f"Total time: {round(sum(states), 4)}")
