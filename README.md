@@ -30,7 +30,7 @@ O arquivo de entrada deve estar no formato yaml e possuir a mesma estrutura util
 Na pasta *files* já existem dois arquivos de exemplo, o arquivo *simulator-model.yml* é o mesmo gerado pelo simulador disponibilizado.
 O arquivo *class-model* contém o [exemplo solicitado para teste do trabalho](./assets/class-model.jpg).  
 
-#### Resulados
+#### Resultados
 ##### class-model.yml
     G/G/1 | arrival: 1.0..4.0 | service: 1.0..1.5
     State           Time    Probability
