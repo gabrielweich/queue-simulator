@@ -8,9 +8,6 @@ import yaml
 import sys
 
 
-ITERATIONS = 100000
-
-
 class QueueSimulator:
     def __init__(self, queues, networks, seed, arrivals, iterations):
         self.random = Random(seed)
