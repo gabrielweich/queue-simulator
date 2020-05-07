@@ -32,7 +32,7 @@ O arquivo *class-model* contém o [exemplo solicitado para teste do trabalho](./
 
 #### Resultados
 ##### class-model.yml
-    G/G/1 | arrival: 1.0..4.0 | service: 1.0..1.5
+    Fila: Q1 | G/G/1 | arrival: 1.0..4.0 | service: 1.0..1.5
     State           Time    Probability
         0     14271.2821       35.3611%
         1     20635.2082       51.1294%
@@ -43,7 +43,7 @@ O arquivo *class-model* contém o [exemplo solicitado para teste do trabalho](./
     Losses: 0
     Total time: 40358.7552
     
-    G/G/3/5 | service: 5.0..10.0
+    Fila: Q2 | G/G/3/5 | service: 5.0..10.0
     State           Time    Probability
         0         33.414        0.0828%
         1       409.1626        1.0138%
@@ -54,7 +54,7 @@ O arquivo *class-model* contém o [exemplo solicitado para teste do trabalho](./
     Losses: 4788
     Total time: 40358.7552
     
-    G/G/2/8 | service: 10.0..20.0
+    Fila: Q3 | G/G/2/8 | service: 10.0..20.0
     State           Time    Probability
         0        10.2735        0.0255%
         1          5.071        0.0126%

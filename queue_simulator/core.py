@@ -106,9 +106,9 @@ def main():
             queues_states[q.queue_properties.name].append(q)
 
     for qp in queues:
-        arrival_str  = f" | arrival: {qp.min_arrival}..{qp.max_arrival}" if qp.min_arrival is not None and qp.max_arrival is not None else ""
+        arrival_str = f" | arrival: {qp.min_arrival}..{qp.max_arrival}" if qp.min_arrival is not None and qp.max_arrival is not None else ""
         capacity_str = f"/{qp.capacity}" if qp.capacity is not None else ''
-        print(f"G/G/{qp.servers}{capacity_str}{arrival_str} | service: {qp.min_service}..{qp.max_service}")
+        print(f"Fila: {qp.name} | G/G/{qp.servers}{capacity_str}{arrival_str} | service: {qp.min_service}..{qp.max_service}")
         states_list = [q.states for q in queues_states[qp.name]]
         losses_list = [q.losses for q in queues_states[qp.name]]
 
