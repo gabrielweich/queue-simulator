@@ -27,12 +27,12 @@ $ python3 -m queue_simulator ./files/class-model.yml
 
 #### Arquivo de entrada
 O arquivo de entrada deve estar no formato yaml e possuir a mesma estrutura utilizada pelo simulador disponibilizado no moodle da disciplina, com exceção da chave *rndnumbers*, utilizada para definir os números aleatórios que serão utilizados na simulação, que será ignorada caso seja enviada.   
-Na pasta *files* já existem dois arquivos de exemplo, o arquivo *simulator-model.yml* é o mesmo gerado pelo simulador disponibilizado.
+Na pasta *files* já existem dois arquivos de exemplo, o arquivo *simulator-model.yml* é o mesmo gerado pelo simulador disponibilizado através do comando `java -jar simulator.jar example`.
 O arquivo *class-model* contém o [exemplo solicitado para teste do trabalho](./assets/class-model.jpg).  
 
 #### Resultados
 ##### class-model.yml
-    Fila: Q1 | G/G/1 | arrival: 1.0..4.0 | service: 1.0..1.5
+    Queue: Q1 | G/G/1 | arrival: 1.0..4.0 | service: 1.0..1.5
     State           Time    Probability
         0     14271.2821       35.3611%
         1     20635.2082       51.1294%
@@ -43,7 +43,7 @@ O arquivo *class-model* contém o [exemplo solicitado para teste do trabalho](./
     Losses: 0
     Total time: 40358.7552
     
-    Fila: Q2 | G/G/3/5 | service: 5.0..10.0
+    Queue: Q2 | G/G/3/5 | service: 5.0..10.0
     State           Time    Probability
         0         33.414        0.0828%
         1       409.1626        1.0138%
@@ -54,7 +54,7 @@ O arquivo *class-model* contém o [exemplo solicitado para teste do trabalho](./
     Losses: 4788
     Total time: 40358.7552
     
-    Fila: Q3 | G/G/2/8 | service: 10.0..20.0
+    Queue: Q3 | G/G/2/8 | service: 10.0..20.0
     State           Time    Probability
         0        10.2735        0.0255%
         1          5.071        0.0126%
@@ -71,7 +71,7 @@ O arquivo *class-model* contém o [exemplo solicitado para teste do trabalho](./
 <br/>
 
 ##### simulator-model.yml
-    G/G/1/5 | arrival: 20.0..40.0 | service: 10.0..12.0
+    Queue: Q1 | G/G/1/5 | arrival: 20.0..40.0 | service: 10.0..12.0
     State           Time    Probability
         0    294131.6796       60.5493%
         1    186329.8257       38.3575%
@@ -80,7 +80,7 @@ O arquivo *class-model* contém o [exemplo solicitado para teste do trabalho](./
     Losses: 0
     Total time: 485772.0952
     
-    G/G/2/5 | service: 30.0..120.0
+    Queue: Q2 | G/G/2/5 | service: 30.0..120.0
     State           Time    Probability
         0       4682.199        0.9639%
         1     31773.7501        6.5409%
@@ -91,7 +91,7 @@ O arquivo *class-model* contém o [exemplo solicitado para teste do trabalho](./
     Losses: 1193
     Total time: 485772.0952
     
-    G/G/2/5 | service: 15.0..60.0
+    Queue: Q3 | G/G/2/5 | service: 15.0..60.0
     State           Time    Probability
         0    310688.7478       63.9577%
         1    145965.2908       30.0481%
@@ -102,7 +102,7 @@ O arquivo *class-model* contém o [exemplo solicitado para teste do trabalho](./
     Losses: 0
     Total time: 485772.0952
     
-    G/G/3 | service: 5.0..15.0
+    Queue: Q4 | G/G/3 | service: 5.0..15.0
     State           Time    Probability
         0    365290.0081       75.1978%
         1    108827.0118       22.4029%
